@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Falta NEXT_PUBLIC_API_URL" }, { status: 500 });
   }
 
-  const resp = await fetch(`${gatewayUrl}/auth/login`, {
+  const resp = await fetch(`${gatewayUrl}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
