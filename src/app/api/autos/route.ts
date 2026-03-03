@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ message: "Falta NEXT_PUBLIC_API_URL" }, { status: 500 });
   }
 
-  const resp = await fetch(`${gatewayUrl}/autos`, {
+  const resp = await fetch(`${gatewayUrl}/api/autos`, {
     headers: { Authorization: `Bearer ${token}` },
     cache: "no-store",
   });
