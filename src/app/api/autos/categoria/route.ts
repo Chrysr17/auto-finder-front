@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(_req: Request, ctx: { params: { categoria: string } }) {
-  const token = cookies().get("token")?.value;
+  const token = (await cookies()).get("token")?.value;
 
   if (!token) {
     return NextResponse.json({ message: "No auth" }, { status: 401 });
