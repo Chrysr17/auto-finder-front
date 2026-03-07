@@ -27,7 +27,11 @@ export default function AutosPage() {
     setErrorMsg(null);
 
     try {
-      const resp = await fetch("/api/autos", { cache: "no-store" });
+      const resp = await fetch("/api/autos", {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      });
 
       if (!resp.ok) {
         setErrorMsg("No se pudieron cargar los autos.");

@@ -29,6 +29,7 @@ export default function LoginPage() {
     try {
       const resp = await fetch("/api/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
@@ -39,8 +40,8 @@ export default function LoginPage() {
         return;
       }
 
-      // cookie ya quedó seteada, ahora navegas
-      router.push("/autos");
+      router.replace("/autos");
+      router.refresh();
     } catch {
       setErrorMsg("No se pudo conectar. Intenta nuevamente.");
     } finally {
