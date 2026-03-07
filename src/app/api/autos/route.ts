@@ -3,10 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const cookieStore = await cookies();
-    console.log(
-    "COOKIES EN /api/autos:",
-    cookieStore.getAll().map((c) => ({ name: c.name, value: c.value }))
-  );
 
   const token = cookieStore.get("token")?.value;
 
