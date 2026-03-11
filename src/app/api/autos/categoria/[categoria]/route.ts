@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ categoria: string }> }
 ) {
   const token = (await cookies()).get("token")?.value;
 
@@ -20,21 +20,20 @@ export async function GET(
     );
   }
 
-  const resp = await fetch(`${gatewayUrl}/api/autos/${params.id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
+  const { categoria } = await params;
 
-  if (resp.status === 404) {
-    return NextResponse.json(
-      { message: "Auto no encontrado" },
-      { status: 404 }
-    );
-  }
+  const resp = await fetch(
+    `${gatewayUrl}/api/autos/categoria/${encodeURIComponent(categoria)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    }
+  );
 
-  const data = await resp.json();
+  const text = await resp.text();
+  const data = text ? JSON.parse(text) : [];
 
   return NextResponse.json(data, { status: resp.status });
 }
