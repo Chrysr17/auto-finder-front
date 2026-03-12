@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import LogoutButton from "@/components/LogoutButton";
 import AddToCompareButton from "@/components/AddToCompareButton";
+import AddToFavoritesButton from "@/components/AddToFavoritesButton";
 
 type Auto = {
   id: number;
@@ -16,14 +17,39 @@ type Auto = {
   imagenPortadaUrl?: string;
 };
 
+type FavoritoDTO = {
+  id: number;
+  autoId: number;
+  fechaCreacion: string;
+};
+
 export default function AutosPage() {
   const [autos, setAutos] = useState<Auto[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [marca, setMarca] = useState("");
   const [categoria, setCategoria] = useState("");
 
+  const cargarFavoritos = async () => {
+    try {
+      const resp = await fetch("/api/favoritos", {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      });
+
+      if (!resp.ok) return;
+
+      const data = (await resp.json()) as FavoritoDTO[];
+      const ids = data.map((fav) => fav.autoId);
+
+      setFavoriteIds(ids);
+    } catch {
+      // silencioso por ahora
+    }
+  };
   const cargarAutos = async () => {
     setLoading(true);
     setErrorMsg(null);
@@ -110,7 +136,11 @@ export default function AutosPage() {
   };
 
   useEffect(() => {
-    cargarAutos();
+    const init = async () => {
+      await Promise.all([cargarAutos(), cargarFavoritos()]);
+    };
+
+    init();
   }, []);
 
   return (
@@ -204,65 +234,88 @@ export default function AutosPage() {
 
         {!loading && !errorMsg && autos.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {autos.map((auto) => (
-              <div
-                key={auto.id}
-                className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow transition hover:bg-white/10"
-              >
-                <Link href={`/autos/${auto.id}`} className="block">
-                  <div className="h-52 w-full bg-black/20">
-                    {auto.imagenPortadaUrl ? (
-                      <img
-                        src={auto.imagenPortadaUrl}
-                        alt={`${auto.marcaNombre ?? "Auto"} ${auto.modeloNombre ?? ""}`}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm opacity-70">
-                        Sin portada
+            {autos.map((auto) => {
+              const isFavorite = favoriteIds.includes(auto.id);
+
+              return (
+                <div
+                  key={auto.id}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow transition hover:bg-white/10"
+                >
+                  <div className="relative">
+                    <Link href={`/autos/${auto.id}`} className="block">
+                      <div className="h-52 w-full bg-black/20">
+                        {auto.imagenPortadaUrl ? (
+                          <img
+                            src={auto.imagenPortadaUrl}
+                            alt={`${auto.marcaNombre ?? "Auto"} ${auto.modeloNombre ?? ""}`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-sm opacity-70">
+                            Sin portada
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </Link>
+
+                    <div className="absolute right-3 top-3">
+                      <AddToFavoritesButton
+                        autoId={auto.id}
+                        initialFavorite={isFavorite}
+                        onToggle={(autoId, nextValue) => {
+                          setFavoriteIds((prev) => {
+                            if (nextValue) {
+                              return prev.includes(autoId) ? prev : [...prev, autoId];
+                            }
+                            return prev.filter((id) => id !== autoId);
+                          });
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div className="p-4">
-                    <h2 className="text-lg font-bold">
-                      {auto.marcaNombre} {auto.modeloNombre}
-                    </h2>
+                    <Link href={`/autos/${auto.id}`} className="block">
+                      <h2 className="text-lg font-bold">
+                        {auto.marcaNombre} {auto.modeloNombre}
+                      </h2>
 
-                    <p className="mt-1 text-sm opacity-80">
-                      {auto.categoriaNombre}
-                    </p>
+                      <p className="mt-1 text-sm opacity-80">
+                        {auto.categoriaNombre}
+                      </p>
 
-                    <p className="mt-1 text-sm opacity-80">
-                      Color: {auto.color}
-                    </p>
+                      <p className="mt-1 text-sm opacity-80">
+                        Color: {auto.color}
+                      </p>
 
-                    <p className="mt-1 text-sm opacity-80">
-                      Año: {auto.anioFabricacion}
-                    </p>
+                      <p className="mt-1 text-sm opacity-80">
+                        Año: {auto.anioFabricacion}
+                      </p>
 
-                    <p className="mt-3 text-lg font-semibold">
-                      {typeof auto.precio === "number"
-                        ? `S/ ${auto.precio.toFixed(2)}`
-                        : "Precio no disponible"}
-                    </p>
-                  </div>
-                </Link>
-
-                <div className="px-4 pb-4">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <Link
-                      href={`/autos/${auto.id}`}
-                      className="rounded-xl bg-white/10 px-4 py-3 text-center text-sm font-medium hover:bg-white/15"
-                    >
-                      Ver detalle
+                      <p className="mt-3 text-lg font-semibold">
+                        {typeof auto.precio === "number"
+                          ? `S/ ${auto.precio.toFixed(2)}`
+                          : "Precio no disponible"}
+                      </p>
                     </Link>
+                  </div>
 
-                    <AddToCompareButton autoId={auto.id} />
+                  <div className="px-4 pb-4">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Link
+                        href={`/autos/${auto.id}`}
+                        className="rounded-xl bg-white/10 px-4 py-3 text-center text-sm font-medium hover:bg-white/15"
+                      >
+                        Ver detalle
+                      </Link>
+
+                      <AddToCompareButton autoId={auto.id} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
