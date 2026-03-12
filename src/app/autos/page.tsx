@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import LogoutButton from "@/components/LogoutButton";
+import AddToCompareButton from "@/components/AddToCompareButton";
 
 type Auto = {
   id: number;
@@ -54,9 +56,14 @@ export default function AutosPage() {
     setErrorMsg(null);
 
     try {
-      const resp = await fetch(`/api/autos/marca/${encodeURIComponent(marca.trim())}`, {
-        cache: "no-store",
-      });
+      const resp = await fetch(
+        `/api/autos/marca/${encodeURIComponent(marca.trim())}`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        }
+      );
 
       if (!resp.ok) {
         setErrorMsg("No se pudo buscar por marca.");
@@ -81,7 +88,11 @@ export default function AutosPage() {
     try {
       const resp = await fetch(
         `/api/autos/categoria/${encodeURIComponent(categoria.trim())}`,
-        { cache: "no-store" }
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        }
       );
 
       if (!resp.ok) {
@@ -109,7 +120,24 @@ export default function AutosPage() {
           <h1 className="text-2xl font-semibold">Autos</h1>
           <p className="text-sm opacity-80">Catálogo de Auto-Finder</p>
         </div>
-        <LogoutButton />
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/favoritos"
+            className="rounded-xl bg-pink-600 px-4 py-2 text-sm font-medium text-white hover:bg-pink-700"
+          >
+            Favoritos
+          </Link>
+
+          <Link
+            href="/comparar"
+            className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+          >
+            Comparar
+          </Link>
+
+          <LogoutButton />
+        </div>
       </header>
 
       <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
@@ -181,40 +209,57 @@ export default function AutosPage() {
                 key={auto.id}
                 className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow transition hover:bg-white/10"
               >
-                <div className="h-52 w-full bg-black/20">
-                  {auto.imagenPortadaUrl ? (
-                    <img
-                      src={auto.imagenPortadaUrl}
-                      alt={`${auto.marcaNombre ?? "Auto"} ${auto.modeloNombre ?? ""}`}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-sm opacity-70">
-                      Sin portada
-                    </div>
-                  )}
-                </div>
+                <Link href={`/autos/${auto.id}`} className="block">
+                  <div className="h-52 w-full bg-black/20">
+                    {auto.imagenPortadaUrl ? (
+                      <img
+                        src={auto.imagenPortadaUrl}
+                        alt={`${auto.marcaNombre ?? "Auto"} ${auto.modeloNombre ?? ""}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-sm opacity-70">
+                        Sin portada
+                      </div>
+                    )}
+                  </div>
 
-                <div className="p-4">
-                  <h2 className="text-lg font-bold">
-                    {auto.marcaNombre} {auto.modeloNombre}
-                  </h2>
+                  <div className="p-4">
+                    <h2 className="text-lg font-bold">
+                      {auto.marcaNombre} {auto.modeloNombre}
+                    </h2>
 
-                  <p className="mt-1 text-sm opacity-80">
-                    {auto.categoriaNombre}
-                  </p>
+                    <p className="mt-1 text-sm opacity-80">
+                      {auto.categoriaNombre}
+                    </p>
 
-                  <p className="mt-1 text-sm opacity-80">
-                    Color: {auto.color}
-                  </p>
+                    <p className="mt-1 text-sm opacity-80">
+                      Color: {auto.color}
+                    </p>
 
-                  <p className="mt-1 text-sm opacity-80">
-                    Año: {auto.anioFabricacion}
-                  </p>
+                    <p className="mt-1 text-sm opacity-80">
+                      Año: {auto.anioFabricacion}
+                    </p>
 
-                  <p className="mt-3 text-lg font-semibold">
-                    S/ {auto.precio?.toFixed(2)}
-                  </p>
+                    <p className="mt-3 text-lg font-semibold">
+                      {typeof auto.precio === "number"
+                        ? `S/ ${auto.precio.toFixed(2)}`
+                        : "Precio no disponible"}
+                    </p>
+                  </div>
+                </Link>
+
+                <div className="px-4 pb-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Link
+                      href={`/autos/${auto.id}`}
+                      className="rounded-xl bg-white/10 px-4 py-3 text-center text-sm font-medium hover:bg-white/15"
+                    >
+                      Ver detalle
+                    </Link>
+
+                    <AddToCompareButton autoId={auto.id} />
+                  </div>
                 </div>
               </div>
             ))}
