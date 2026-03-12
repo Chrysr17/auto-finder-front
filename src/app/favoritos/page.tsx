@@ -26,7 +26,7 @@ export default function FavoritosPage() {
     setErrorMsg(null);
 
     try {
-      const resp = await fetch("/api/favoritos", { cache: "no-store" });
+      const resp = await fetch("/api/favoritos/detalle", { cache: "no-store" });
 
       if (!resp.ok) {
         if (resp.status === 401) {
