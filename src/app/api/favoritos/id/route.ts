@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(
+export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const token = (await cookies()).get("token")?.value;
 
@@ -20,8 +20,10 @@ export async function POST(
     );
   }
 
-  const resp = await fetch(`${gatewayUrl}/api/favoritos/${params.id}`, {
-    method: "POST",
+  const { id } = await params;
+
+  const resp = await fetch(`${gatewayUrl}/api/favoritos/${id}`, {
+    method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
     },
