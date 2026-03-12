@@ -137,7 +137,41 @@ export default function AutosPage() {
 
   useEffect(() => {
     const init = async () => {
-      await Promise.all([cargarAutos(), cargarFavoritos()]);
+      setLoading(true);
+
+      try {
+        const [autosResp, favResp] = await Promise.all([
+          fetch("/api/autos", {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }),
+          fetch("/api/favoritos", {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }),
+        ]);
+
+        if (!autosResp.ok) {
+          setErrorMsg("No se pudieron cargar los autos.");
+          return;
+        }
+
+        const autosData = await autosResp.json();
+        setAutos(autosData);
+
+        if (favResp.ok) {
+          const favData = await favResp.json();
+          const ids = favData.map((f: { autoId: number }) => f.autoId);
+          setFavoriteIds(ids);
+        }
+
+      } catch {
+        setErrorMsg("Error de conexión.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     init();
