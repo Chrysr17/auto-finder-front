@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import LogoutButton from "@/components/LogoutButton";
 import AddToCompareButton from "@/components/AddToCompareButton";
 import AddToFavoritesButton from "@/components/AddToFavoritesButton";
+import Navbar from "@/components/Navbar";
 
 type Auto = {
   id: number;
@@ -179,28 +180,12 @@ export default function AutosPage() {
 
   return (
     <main className="min-h-screen p-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <Navbar />
+
+      <header className="mt-6">
         <div>
           <h1 className="text-2xl font-semibold">Autos</h1>
           <p className="text-sm opacity-80">Catálogo de Auto-Finder</p>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/favoritos"
-            className="rounded-xl bg-pink-600 px-4 py-2 text-sm font-medium text-white hover:bg-pink-700"
-          >
-            Favoritos
-          </Link>
-
-          <Link
-            href="/comparar"
-            className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-          >
-            Comparar
-          </Link>
-
-          <LogoutButton />
         </div>
       </header>
 
