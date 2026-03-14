@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import RemoveFavoriteButton from "@/components/RemoveFavoriteButton";
+import Navbar from "@/components/Navbar";
 
 type Auto = {
   id: number;
@@ -56,12 +57,13 @@ export default function FavoritosPage() {
 
   return (
     <main className="min-h-screen p-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <Navbar />
+
+      <header className="mt-6">
         <div>
           <h1 className="text-2xl font-semibold">Favoritos</h1>
           <p className="text-sm opacity-80">Tus autos guardados</p>
         </div>
-        <LogoutButton />
       </header>
 
       <section className="mt-6">
