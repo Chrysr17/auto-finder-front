@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
 
 type Auto = {
   id: number;
@@ -68,20 +69,15 @@ export default function CompararPage() {
 
   return (
     <main className="min-h-screen p-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <Navbar />
+
+      <header className="mt-6">
         <div>
           <h1 className="text-2xl font-semibold">Comparador de autos</h1>
           <p className="text-sm opacity-80">
             Compara precio, año, categoría y color
           </p>
         </div>
-
-        <button
-          onClick={limpiarComparacion}
-          className="rounded-xl bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
-        >
-          Limpiar comparación
-        </button>
       </header>
 
       <section className="mt-6">
