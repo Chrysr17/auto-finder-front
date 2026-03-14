@@ -9,8 +9,13 @@ export default function LogoutButton() {
 
   const logout = async () => {
     setLoading(true);
+
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
       router.push("/login");
       router.refresh();
     } finally {
@@ -22,9 +27,9 @@ export default function LogoutButton() {
     <button
       onClick={logout}
       disabled={loading}
-      className="rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm hover:bg-white/15 disabled:opacity-60"
+      className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-60"
     >
-      {loading ? "Cerrando..." : "Cerrar sesión"}
+      {loading ? "Saliendo..." : "Cerrar sesión"}
     </button>
   );
 }
