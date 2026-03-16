@@ -252,29 +252,31 @@ export default function AutosPage() {
         )}
 
         {!loading && !errorMsg && autos.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {autos.map((auto) => {
               const isFavorite = favoriteIds.includes(auto.id);
 
               return (
-                <div
+                <article
                   key={auto.id}
-                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow transition hover:bg-white/10"
+                  className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-lg backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.07]"
                 >
                   <div className="relative">
                     <Link href={`/autos/${auto.id}`} className="block">
-                      <div className="h-52 w-full bg-black/20">
+                      <div className="relative h-56 w-full overflow-hidden bg-black/20">
                         {auto.imagenPortadaUrl ? (
                           <img
                             src={auto.imagenPortadaUrl}
                             alt={`${auto.marcaNombre ?? "Auto"} ${auto.modeloNombre ?? ""}`}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center text-sm opacity-70">
                             Sin portada
                           </div>
                         )}
+
+                        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent" />
                       </div>
                     </Link>
 
@@ -292,39 +294,39 @@ export default function AutosPage() {
                         }}
                       />
                     </div>
+
+                    <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
+                      <span className="rounded-full border border-white/10 bg-black/50 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
+                        {auto.categoriaNombre ?? "Categoría"}
+                      </span>
+
+                      <span className="rounded-full border border-white/10 bg-black/50 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
+                        {auto.anioFabricacion ?? "Año"}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="p-4">
+                  <div className="p-5">
                     <Link href={`/autos/${auto.id}`} className="block">
-                      <h2 className="text-lg font-bold">
+                      <h2 className="line-clamp-1 text-xl font-semibold tracking-tight">
                         {auto.marcaNombre} {auto.modeloNombre}
                       </h2>
 
-                      <p className="mt-1 text-sm opacity-80">
-                        {auto.categoriaNombre}
-                      </p>
+                      <div className="mt-2 flex items-center gap-2 text-sm text-white/70">
+                        <span>{auto.color ?? "Color no disponible"}</span>
+                      </div>
 
-                      <p className="mt-1 text-sm opacity-80">
-                        Color: {auto.color}
-                      </p>
-
-                      <p className="mt-1 text-sm opacity-80">
-                        Año: {auto.anioFabricacion}
-                      </p>
-
-                      <p className="mt-3 text-lg font-semibold">
+                      <p className="mt-4 text-2xl font-bold tracking-tight text-white">
                         {typeof auto.precio === "number"
                           ? `S/ ${auto.precio.toFixed(2)}`
                           : "Precio no disponible"}
                       </p>
                     </Link>
-                  </div>
 
-                  <div className="px-4 pb-4">
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       <Link
                         href={`/autos/${auto.id}`}
-                        className="rounded-xl bg-white/10 px-4 py-3 text-center text-sm font-medium hover:bg-white/15"
+                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10"
                       >
                         Ver detalle
                       </Link>
@@ -332,7 +334,7 @@ export default function AutosPage() {
                       <AddToCompareButton autoId={auto.id} />
                     </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
