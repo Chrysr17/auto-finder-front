@@ -182,57 +182,62 @@ export default function AutosPage() {
     <main className="min-h-screen p-6">
       <Navbar />
 
-      <header className="mt-6">
-        <div>
-          <h1 className="text-2xl font-semibold">Autos</h1>
-          <p className="text-sm opacity-80">Catálogo de Auto-Finder</p>
-        </div>
+      <header className="mt-2 mb-6">
+        <p className="text-sm uppercase tracking-[0.2em] text-blue-400/80">
+          Auto-finder
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+          Encuentra, compara y guarda tus autos favoritos
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-white/70 sm:text-base">
+          Explora el catálogo de Auto-Finder, filtra por marca o categoría y encuentra tu auto favorito.
+        </p>
       </header>
 
-<section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-lg backdrop-blur-sm">
-  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-    <input
-      type="text"
-      placeholder="Buscar por marca"
-      value={marca}
-      onChange={(e) => setMarca(e.target.value)}
-      className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/20"
-    />
+      <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-lg backdrop-blur-sm">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <input
+            type="text"
+            placeholder="Buscar por marca"
+            value={marca}
+            onChange={(e) => setMarca(e.target.value)}
+            className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/20"
+          />
 
-    <button
-      onClick={buscarMarca}
-      className="rounded-2xl bg-blue-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700"
-    >
-      Buscar marca
-    </button>
+          <button
+            onClick={buscarMarca}
+            className="rounded-2xl bg-blue-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700"
+          >
+            Buscar marca
+          </button>
 
-    <input
-      type="text"
-      placeholder="Buscar por categoría"
-      value={categoria}
-      onChange={(e) => setCategoria(e.target.value)}
-      className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-green-500/40 focus:ring-2 focus:ring-green-500/20"
-    />
+          <input
+            type="text"
+            placeholder="Buscar por categoría"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+            className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-green-500/40 focus:ring-2 focus:ring-green-500/20"
+          />
 
-    <button
-      onClick={buscarCategoria}
-      className="rounded-2xl bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-700"
-    >
-      Buscar categoría
-    </button>
+          <button
+            onClick={buscarCategoria}
+            className="rounded-2xl bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-700"
+          >
+            Buscar categoría
+          </button>
 
-    <button
-      onClick={() => {
-        setMarca("");
-        setCategoria("");
-        cargarAutos();
-      }}
-      className="rounded-2xl bg-white/10 px-4 py-3 font-medium text-white transition hover:bg-white/15"
-    >
-      Reset
-    </button>
-  </div>
-</section>
+          <button
+            onClick={() => {
+              setMarca("");
+              setCategoria("");
+              cargarAutos();
+            }}
+            className="rounded-2xl bg-white/10 px-4 py-3 font-medium text-white transition hover:bg-white/15"
+          >
+            Reset
+          </button>
+        </div>
+      </section>
 
       <section className="mt-6">
         {loading && (
