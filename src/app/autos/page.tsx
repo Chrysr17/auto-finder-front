@@ -189,48 +189,50 @@ export default function AutosPage() {
         </div>
       </header>
 
-      <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <input
-          type="text"
-          placeholder="Buscar por marca"
-          value={marca}
-          onChange={(e) => setMarca(e.target.value)}
-          className="rounded-xl border border-white/10 bg-black/20 p-3 outline-none focus:ring-2 focus:ring-white/20"
-        />
+<section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-lg backdrop-blur-sm">
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+    <input
+      type="text"
+      placeholder="Buscar por marca"
+      value={marca}
+      onChange={(e) => setMarca(e.target.value)}
+      className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/20"
+    />
 
-        <button
-          onClick={buscarMarca}
-          className="rounded-xl bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700"
-        >
-          Buscar marca
-        </button>
+    <button
+      onClick={buscarMarca}
+      className="rounded-2xl bg-blue-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700"
+    >
+      Buscar marca
+    </button>
 
-        <input
-          type="text"
-          placeholder="Buscar por categoría"
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
-          className="rounded-xl border border-white/10 bg-black/20 p-3 outline-none focus:ring-2 focus:ring-white/20"
-        />
+    <input
+      type="text"
+      placeholder="Buscar por categoría"
+      value={categoria}
+      onChange={(e) => setCategoria(e.target.value)}
+      className="rounded-2xl border border-white/10 bg-black/20 p-3 outline-none transition focus:border-green-500/40 focus:ring-2 focus:ring-green-500/20"
+    />
 
-        <button
-          onClick={buscarCategoria}
-          className="rounded-xl bg-green-600 px-4 py-3 font-medium text-white hover:bg-green-700"
-        >
-          Buscar categoría
-        </button>
+    <button
+      onClick={buscarCategoria}
+      className="rounded-2xl bg-green-600 px-4 py-3 font-medium text-white transition hover:bg-green-700"
+    >
+      Buscar categoría
+    </button>
 
-        <button
-          onClick={() => {
-            setMarca("");
-            setCategoria("");
-            cargarAutos();
-          }}
-          className="rounded-xl bg-gray-600 px-4 py-3 font-medium text-white hover:bg-gray-700"
-        >
-          Reset
-        </button>
-      </section>
+    <button
+      onClick={() => {
+        setMarca("");
+        setCategoria("");
+        cargarAutos();
+      }}
+      className="rounded-2xl bg-white/10 px-4 py-3 font-medium text-white transition hover:bg-white/15"
+    >
+      Reset
+    </button>
+  </div>
+</section>
 
       <section className="mt-6">
         {loading && (
