@@ -4,23 +4,29 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 
-type Auto = {
+type AutoComparado = {
   id: number;
-  color?: string;
-  precio?: number;
-  anioFabricacion?: number;
   marcaNombre?: string;
   modeloNombre?: string;
+  precio?: number;
+  anioFabricacion?: number;
+  color?: string;
   categoriaNombre?: string;
   imagenPortadaUrl?: string;
 };
 
+type ComparacionDTO = {
+  criterio: string;
+  autosComparados: AutoComparado[];
+};
+
 export default function CompararPage() {
-  const [autos, setAutos] = useState<Auto[]>([]);
+  const [criterio, setCriterio] = useState("general");
+  const [autos, setAutos] = useState<AutoComparado[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const cargarAutosComparar = async () => {
+  const cargarComparacion = async (criterioActual: string = "general") => {
     setLoading(true);
     setErrorMsg(null);
 
@@ -30,24 +36,29 @@ export default function CompararPage() {
 
       if (ids.length === 0) {
         setAutos([]);
-        setLoading(false);
         return;
       }
 
-      const results = await Promise.all(
-        ids.map(async (id) => {
-          const resp = await fetch(`/api/autos/${id}`, {
-            method: "GET",
-            credentials: "include",
-            cache: "no-store",
-          });
-
-          if (!resp.ok) return null;
-          return resp.json();
-        })
+      const resp = await fetch(
+        `/api/comparar?criterio=${encodeURIComponent(criterioActual)}`,
+        {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(ids),
+        }
       );
 
-      setAutos(results.filter(Boolean));
+      if (!resp.ok) {
+        setErrorMsg("No se pudo generar la comparación.");
+        return;
+      }
+
+      const data = (await resp.json());
+      setAutos(data.autosComparados ?? []);
     } catch {
       setErrorMsg("No se pudieron cargar los autos a comparar.");
     } finally {
@@ -60,17 +71,23 @@ export default function CompararPage() {
     setAutos([]);
   };
 
-  const quitarAuto = (id: number) => {
+  const quitarAuto = async (id: number) => {
     const current = localStorage.getItem("compare_autos");
     const ids: number[] = current ? JSON.parse(current) : [];
     const nuevos = ids.filter((item) => item !== id);
 
     localStorage.setItem("compare_autos", JSON.stringify(nuevos));
-    setAutos((prev) => prev.filter((a) => a.id !== id));
+
+    if (nuevos.length === 0) {
+      setAutos([]);
+      return;
+    }
+
+    await cargarComparacion(criterio);
   };
 
   useEffect(() => {
-    cargarAutosComparar();
+    cargarComparacion("general");
   }, []);
 
   const menorPrecio = useMemo(() => {
@@ -124,6 +141,37 @@ export default function CompararPage() {
             </button>
           </div>
         </header>
+
+        <section className="mb-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-lg backdrop-blur-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-white">Criterio de comparación</p>
+              <p className="text-xs text-white/60">
+                Puedes usar el criterio que soporte tu microservicio.
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <select
+                value={criterio}
+                onChange={(e) => setCriterio(e.target.value)}
+                className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm outline-none"
+              >
+                <option value="general">General</option>
+                <option value="precio">Precio</option>
+                <option value="anio">Año</option>
+                <option value="marca">Marca</option>
+              </select>
+
+              <button
+                onClick={() => cargarComparacion(criterio)}
+                className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+              >
+                Actualizar comparación
+              </button>
+            </div>
+          </div>
+        </section>
 
         <section className="mt-6">
           {loading && (
@@ -254,11 +302,10 @@ export default function CompararPage() {
                         return (
                           <td
                             key={auto.id}
-                            className={`p-4 ${
-                              destacado
+                            className={`p-4 ${destacado
                                 ? "font-semibold text-emerald-400"
                                 : "text-white/80"
-                            }`}
+                              }`}
                           >
                             {typeof auto.precio === "number"
                               ? `S/ ${auto.precio.toFixed(2)}`
@@ -284,11 +331,10 @@ export default function CompararPage() {
                         return (
                           <td
                             key={auto.id}
-                            className={`p-4 ${
-                              destacado
+                            className={`p-4 ${destacado
                                 ? "font-semibold text-blue-400"
                                 : "text-white/80"
-                            }`}
+                              }`}
                           >
                             {auto.anioFabricacion ?? "No disponible"}
                             {destacado && (
