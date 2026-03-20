@@ -1,12 +1,8 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-toast.success("Agregado a favoritos");
-toast.error("Error al agregar");
-
 
 type Props = {
   autoId: number;
@@ -22,6 +18,11 @@ export default function AddToFavoritesButton({
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
   const [loading, setLoading] = useState(false);
 
+  // 🔥 importante para sincronizar con cambios externos
+  useEffect(() => {
+    setIsFavorite(initialFavorite);
+  }, [initialFavorite]);
+
   const handleToggle = async () => {
     if (loading) return;
 
@@ -36,14 +37,23 @@ export default function AddToFavoritesButton({
       });
 
       if (!resp.ok) {
+        toast.error("No se pudo actualizar favoritos");
         return;
       }
 
       const nextValue = !isFavorite;
       setIsFavorite(nextValue);
       onToggle?.(autoId, nextValue);
+
+      // ✅ toast correcto según acción
+      if (nextValue) {
+        toast.success("Agregado a favoritos");
+      } else {
+        toast.error("Eliminado de favoritos");
+      }
+
     } catch {
-      // aquí luego puedes cambiarlo por toast
+      toast.error("Error de conexión");
     } finally {
       setLoading(false);
     }
@@ -60,13 +70,14 @@ export default function AddToFavoritesButton({
       disabled={loading}
       aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
       title={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10 disabled:opacity-60"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur transition hover:bg-white/10 active:scale-90 disabled:opacity-60"
     >
       <Heart
-        className={`h-5 w-5 transition duration-300 ${isFavorite
+        className={`h-5 w-5 transition duration-300 ${
+          isFavorite
             ? "fill-blue-500 text-blue-500 scale-110"
             : "text-white/80"
-          }`}
+        }`}
       />
     </button>
   );
