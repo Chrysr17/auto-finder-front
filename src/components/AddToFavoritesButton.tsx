@@ -2,6 +2,11 @@
 
 import { Heart } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+
+toast.success("Agregado a favoritos");
+toast.error("Error al agregar");
+
 
 type Props = {
   autoId: number;
@@ -58,11 +63,10 @@ export default function AddToFavoritesButton({
       className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10 disabled:opacity-60"
     >
       <Heart
-        className={`h-5 w-5 transition ${
-          isFavorite
-            ? "fill-blue-500 text-blue-500"
+        className={`h-5 w-5 transition duration-300 ${isFavorite
+            ? "fill-blue-500 text-blue-500 scale-110"
             : "text-white/80"
-        }`}
+          }`}
       />
     </button>
   );
