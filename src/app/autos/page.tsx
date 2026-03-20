@@ -241,8 +241,13 @@ export default function AutosPage() {
 
       <section className="mt-6">
         {loading && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            Cargando autos...
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="h-72 animate-pulse rounded-3xl bg-white/5"
+              />
+            ))}
           </div>
         )}
 
