@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
+import { useAppCounts } from "@/context/AppCountsContext";
 
 type AutoComparado = {
   id: number;
@@ -25,6 +26,8 @@ export default function CompararPage() {
   const [autos, setAutos] = useState<AutoComparado[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { refreshCompareCount, setCompareCountFromIds } = useAppCounts();
+
 
   const cargarComparacion = async (criterioActual: string = "general") => {
     setLoading(true);
@@ -69,6 +72,7 @@ export default function CompararPage() {
   const limpiarComparacion = () => {
     localStorage.removeItem("compare_autos");
     setAutos([]);
+    setCompareCountFromIds([]);
   };
 
   const quitarAuto = async (id: number) => {
@@ -77,6 +81,7 @@ export default function CompararPage() {
     const nuevos = ids.filter((item) => item !== id);
 
     localStorage.setItem("compare_autos", JSON.stringify(nuevos));
+    setCompareCountFromIds(nuevos);
 
     if (nuevos.length === 0) {
       setAutos([]);
@@ -88,6 +93,7 @@ export default function CompararPage() {
 
   useEffect(() => {
     cargarComparacion("general");
+    refreshCompareCount();
   }, []);
 
   const menorPrecio = useMemo(() => {
@@ -303,8 +309,8 @@ export default function CompararPage() {
                           <td
                             key={auto.id}
                             className={`p-4 ${destacado
-                                ? "font-semibold text-emerald-400"
-                                : "text-white/80"
+                              ? "font-semibold text-emerald-400"
+                              : "text-white/80"
                               }`}
                           >
                             {typeof auto.precio === "number"
@@ -332,8 +338,8 @@ export default function CompararPage() {
                           <td
                             key={auto.id}
                             className={`p-4 ${destacado
-                                ? "font-semibold text-blue-400"
-                                : "text-white/80"
+                              ? "font-semibold text-blue-400"
+                              : "text-white/80"
                               }`}
                           >
                             {auto.anioFabricacion ?? "No disponible"}
