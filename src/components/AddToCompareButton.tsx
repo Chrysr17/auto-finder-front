@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAppCounts } from "@/context/AppCountsContext";
 
 type Props = {
   autoId: number;
@@ -8,6 +9,7 @@ type Props = {
 
 export default function AddToCompareButton({ autoId }: Props) {
   const [message, setMessage] = useState("");
+  const { refreshCompareCount } = useAppCounts();
 
   const handleAdd = () => {
     const current = localStorage.getItem("compare_autos");
@@ -25,6 +27,7 @@ export default function AddToCompareButton({ autoId }: Props) {
 
     ids.push(autoId);
     localStorage.setItem("compare_autos", JSON.stringify(ids));
+    refreshCompareCount();
     setMessage("Agregado");
   };
 
