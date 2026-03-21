@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import { AppCountsProvider } from "@/context/AppCountsContext";
 
 import "./globals.css";
 
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: any) {
   return (
     <html lang="es">
       <body>
-        {children}
+        <AppCountsProvider>
+                  {children}
         <Toaster position="top-right" />
+        </AppCountsProvider>
       </body>
     </html>
   );
