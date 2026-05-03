@@ -6,17 +6,7 @@ import Navbar from "@/components/Navbar";
 import AddToFavoritesButton from "@/components/AddToFavoritesButton";
 import AddToCompareButton from "@/components/AddToCompareButton";
 import GoToCompareButton from "@/components/GoToCompareButton";
-
-type Auto = {
-  id: number;
-  color?: string;
-  precio?: number;
-  anioFabricacion?: number;
-  marcaNombre?: string;
-  modeloNombre?: string;
-  categoriaNombre?: string;
-  imagenPortadaUrl?: string;
-};
+import type { Auto } from "@/types";
 
 export default function AutoDetallePage({
   params,

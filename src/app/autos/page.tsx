@@ -6,23 +6,7 @@ import LogoutButton from "@/components/LogoutButton";
 import AddToCompareButton from "@/components/AddToCompareButton";
 import AddToFavoritesButton from "@/components/AddToFavoritesButton";
 import Navbar from "@/components/Navbar";
-
-type Auto = {
-  id: number;
-  color?: string;
-  precio?: number;
-  anioFabricacion?: number;
-  marcaNombre?: string;
-  modeloNombre?: string;
-  categoriaNombre?: string;
-  imagenPortadaUrl?: string;
-};
-
-type FavoritoDTO = {
-  id: number;
-  autoId: number;
-  fechaCreacion: string;
-};
+import type { Auto, Favorito } from "@/types";
 
 export default function AutosPage() {
   const [autos, setAutos] = useState<Auto[]>([]);
@@ -43,7 +27,7 @@ export default function AutosPage() {
 
       if (!resp.ok) return;
 
-      const data = (await resp.json()) as FavoritoDTO[];
+      const data = (await resp.json()) as Favorito[];
       const ids = data.map((fav) => fav.autoId);
 
       setFavoriteIds(ids);
