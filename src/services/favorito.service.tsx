@@ -1,10 +1,5 @@
 import api from "@/app/api/axios";
-
-export interface Favorito {
-  id: number;
-  autoId: number;
-  usuarioId: number;
-}
+import type { Favorito } from "@/types";
 
 export const getFavoritos = async (): Promise<Favorito[]> => {
   const res = await api.get("/favoritos");
