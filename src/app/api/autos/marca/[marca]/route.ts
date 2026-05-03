@@ -1,5 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import {
+  getBackendBaseUrl,
+  missingBackendBaseUrlResponse,
+} from "@/app/api/backend";
 
 export async function GET(
   _req: Request,
@@ -11,13 +15,10 @@ export async function GET(
     return NextResponse.json({ message: "No auth" }, { status: 401 });
   }
 
-  const gatewayUrl = process.env.NEXT_PUBLIC_API_URL;
+  const gatewayUrl = getBackendBaseUrl();
 
   if (!gatewayUrl) {
-    return NextResponse.json(
-      { message: "Falta NEXT_PUBLIC_API_URL" },
-      { status: 500 }
-    );
+    return missingBackendBaseUrlResponse();
   }
 
   const { marca } = await params;

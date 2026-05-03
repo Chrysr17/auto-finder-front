@@ -1,30 +1,20 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   getBackendBaseUrl,
   missingBackendBaseUrlResponse,
 } from "@/app/api/backend";
 
-export async function GET() {
-  const cookieStore = await cookies();
-
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) {
-    return NextResponse.json({ message: "No auth" }, { status: 401 });
-  }
-
+export async function GET(req: Request) {
   const gatewayUrl = getBackendBaseUrl();
 
   if (!gatewayUrl) {
     return missingBackendBaseUrlResponse();
   }
 
-  const resp = await fetch(`${gatewayUrl}/api/autos`, {
+  const { search } = new URL(req.url);
+
+  const resp = await fetch(`${gatewayUrl}/api/autos/buscar${search}`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     cache: "no-store",
   });
 
