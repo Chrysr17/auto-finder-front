@@ -5,17 +5,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import AddToFavoritesButton from "@/components/AddToFavoritesButton";
 import AddToCompareButton from "@/components/AddToCompareButton";
-
-type Auto = {
-  id: number;
-  color?: string;
-  precio?: number;
-  anioFabricacion?: number;
-  marcaNombre?: string;
-  modeloNombre?: string;
-  categoriaNombre?: string;
-  imagenPortadaUrl?: string;
-};
+import type { Auto } from "@/types";
 
 export default function FavoritosPage() {
   const [favoritos, setFavoritos] = useState<Auto[]>([]);
