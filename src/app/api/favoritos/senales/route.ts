@@ -18,7 +18,8 @@ export async function GET() {
     return missingBackendBaseUrlResponse();
   }
 
-  const resp = await fetch(`${gatewayUrl}/api/favoritos`, {
+  const resp = await fetch(`${gatewayUrl}/api/favoritos/senales`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -26,7 +27,7 @@ export async function GET() {
   });
 
   const text = await resp.text();
-  const data = text ? JSON.parse(text) : [];
+  const data = text ? JSON.parse(text) : null;
 
   return NextResponse.json(data, { status: resp.status });
 }

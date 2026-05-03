@@ -1,8 +1,12 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import {
+  getBackendBaseUrl,
+  missingBackendBaseUrlResponse,
+} from "@/app/api/backend";
 
 export async function POST(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const token = (await cookies()).get("token")?.value;
@@ -11,22 +15,57 @@ export async function POST(
     return NextResponse.json({ message: "No auth" }, { status: 401 });
   }
 
-  const gatewayUrl = process.env.NEXT_PUBLIC_API_URL;
+  const gatewayUrl = getBackendBaseUrl();
 
   if (!gatewayUrl) {
-    return NextResponse.json(
-      { message: "Falta NEXT_PUBLIC_API_URL" },
-      { status: 500 }
-    );
+    return missingBackendBaseUrlResponse();
   }
 
   const { id } = await params;
+  const body = await req.text();
 
   const resp = await fetch(`${gatewayUrl}/api/favoritos/${id}`, {
     method: "POST",
     headers: {
+      ...(body ? { "Content-Type": "application/json" } : {}),
       Authorization: `Bearer ${token}`,
     },
+    body: body || undefined,
+    cache: "no-store",
+  });
+
+  const text = await resp.text();
+  const data = text ? JSON.parse(text) : null;
+
+  return NextResponse.json(data, { status: resp.status });
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return NextResponse.json({ message: "No auth" }, { status: 401 });
+  }
+
+  const gatewayUrl = getBackendBaseUrl();
+
+  if (!gatewayUrl) {
+    return missingBackendBaseUrlResponse();
+  }
+
+  const { id } = await params;
+  const body = await req.text();
+
+  const resp = await fetch(`${gatewayUrl}/api/favoritos/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: body || "{}",
     cache: "no-store",
   });
 
@@ -46,13 +85,10 @@ export async function DELETE(
     return NextResponse.json({ message: "No auth" }, { status: 401 });
   }
 
-  const gatewayUrl = process.env.NEXT_PUBLIC_API_URL;
+  const gatewayUrl = getBackendBaseUrl();
 
   if (!gatewayUrl) {
-    return NextResponse.json(
-      { message: "Falta NEXT_PUBLIC_API_URL" },
-      { status: 500 }
-    );
+    return missingBackendBaseUrlResponse();
   }
 
   const { id } = await params;

@@ -18,7 +18,8 @@ export async function GET() {
     return missingBackendBaseUrlResponse();
   }
 
-  const resp = await fetch(`${gatewayUrl}/api/favoritos`, {
+  const resp = await fetch(`${gatewayUrl}/api/favoritos/detalle-enriquecido`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
