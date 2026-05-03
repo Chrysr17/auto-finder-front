@@ -4,22 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useAppCounts } from "@/context/AppCountsContext";
-
-type AutoComparado = {
-  id: number;
-  marcaNombre?: string;
-  modeloNombre?: string;
-  precio?: number;
-  anioFabricacion?: number;
-  color?: string;
-  categoriaNombre?: string;
-  imagenPortadaUrl?: string;
-};
-
-type ComparacionDTO = {
-  criterio: string;
-  autosComparados: AutoComparado[];
-};
+import type { AutoComparado, ComparacionDTO } from "@/types";
 
 export default function CompararPage() {
   const [criterio, setCriterio] = useState("general");
@@ -60,7 +45,7 @@ export default function CompararPage() {
         return;
       }
 
-      const data = (await resp.json());
+      const data = (await resp.json()) as ComparacionDTO;
       setAutos(data.autosComparados ?? []);
     } catch {
       setErrorMsg("No se pudieron cargar los autos a comparar.");
