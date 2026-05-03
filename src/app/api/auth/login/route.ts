@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
+import {
+  getBackendBaseUrl,
+  missingBackendBaseUrlResponse,
+} from "@/app/api/backend";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const gatewayUrl = process.env.NEXT_PUBLIC_API_URL;
+    const gatewayUrl = getBackendBaseUrl();
 
     if (!gatewayUrl) {
-      return NextResponse.json(
-        { message: "Falta NEXT_PUBLIC_API_URL" },
-        { status: 500 }
-      );
+      return missingBackendBaseUrlResponse();
     }
 
     const resp = await fetch(`${gatewayUrl}/api/auth/login`, {
